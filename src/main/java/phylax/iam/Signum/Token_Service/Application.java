@@ -1,13 +1,13 @@
-package phylax.iam.signum;
+package phylax.iam.Signum.Token_Service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SignumApplication {
+public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SignumApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 
 }
