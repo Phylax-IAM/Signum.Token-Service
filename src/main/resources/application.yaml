@@ -3,13 +3,17 @@ server:
   port: ${APPLICATION_PORT}
   address: ${APPLICATION_HOST}
 
-# gRPC server configuration
-grpc:
-  server:
-    address: ${GRPC_APPLICATION_HOST}:${GRPC_APPLICATION_PORT}
+
 
 # application configuration
 spring:
+
+  # gRPC server configuration
+  grpc:
+    server:
+      port: ${GRPC_APPLICATION_PORT}
+      host: ${GRPC_APPLICATION_HOST}
+
   application:
     name: signum
 
