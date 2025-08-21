@@ -1,10 +1,10 @@
-package phylax.iam.signum;
+package phylax.iam.Signum.Token_Service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SignumApplicationTests {
+class ApplicationTests {
 
 	@Test
 	void contextLoads() {
