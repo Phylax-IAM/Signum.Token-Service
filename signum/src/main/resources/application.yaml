@@ -1,0 +1,39 @@
+# server configuration
+server:
+  port: ${APPLICATION_PORT}
+  address: ${APPLICATION_HOST}
+
+# gRPC server configuration
+grpc:
+  server:
+    port: ${GRPC_APPLICATION_PORT}
+    address: ${GRPC_APPLICATION_HOST}
+
+# application configuration
+spring:
+  application:
+    name: signum
+
+  cache:
+    type: redis
+
+  config:
+    import: optional:file:dev.env[.properties]
+
+  datasource:
+    username: ${POSTGRES_HOST_USER}
+    password: ${POSTGRES_HOST_PASSWORD}
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  redis:
+    ssl: false
+    user: ${REDIS_HOST_USER}
+    timeout: 2000ms
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    password: ${REDIS_HOST_PASSWORD}

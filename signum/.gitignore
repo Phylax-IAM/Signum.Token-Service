@@ -1,11 +1,8 @@
 HELP.md
 target/
-!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-mvnw
-mvnw.cmd
-.mvn/**
 
 ### STS ###
 .apt_generated
@@ -34,13 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### Env files ###
-*.env
-
-### Data and Cache ###
-/data
-/cache
-
-### docker compose used for starting up the env
-docker-compose.yaml
