@@ -17,12 +17,10 @@ spring:
   application:
     name: signum
 
-  cache:
-    type: redis
-
   config:
     import: optional:file:dev.env[.properties]
 
+  # Database configuration
   datasource:
     username: ${POSTGRES_HOST_USER}
     password: ${POSTGRES_HOST_PASSWORD}
@@ -33,6 +31,10 @@ spring:
     hibernate:
       ddl-auto: update
 
+  # Cache configuration
+  cache:
+    type: redis
+
   redis:
     ssl: false
     user: ${REDIS_HOST_USER}
@@ -40,3 +42,9 @@ spring:
     host: ${REDIS_HOST}
     port: ${REDIS_PORT}
     password: ${REDIS_HOST_PASSWORD}
+
+# Scheduled jobs configuration
+scheduler:
+  revoked-token-cleanup:
+    seconds: 300
+
