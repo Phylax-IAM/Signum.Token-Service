@@ -2,6 +2,8 @@ package phylax.iam.Signum.Token_Service.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import phylax.iam.Signum.Token_Service.common.constant.TokenClass;
+import phylax.iam.Signum.Token_Service.common.constant.TokenType;
 import phylax.iam.Signum.Token_Service.entity.key.RevokedTokenKey;
 
 import java.time.Instant;
@@ -19,15 +21,25 @@ import java.time.Instant;
  * <ul>
  *   <li>Maps to the database table {@code user_revoked_token}.</li>
  *   <li>Uses {@link RevokedTokenKey} as a composite primary key to uniquely
- *   identify revoked tokens across users, tenants, devices, and token IDs.</li>
+ *       identify revoked tokens across users, tenants, devices, and token IDs.</li>
+ *   <li>Each record persists both the token details and associated metadata
+ *       (revoked/expiry timestamps).</li>
  * </ul>
  *
  * <h2>Lombok Annotations</h2>
  * <ul>
- *   <li>{@link Getter}, {@link Setter} – auto-generates getters and setters.</li>
+ *   <li>{@link Getter}, {@link Setter} – auto-generates accessors.</li>
  *   <li>{@link Builder} – enables fluent builder pattern for constructing instances.</li>
  *   <li>{@link NoArgsConstructor}, {@link AllArgsConstructor} – provides default
- *   and all-args constructors.</li>
+ *       and all-args constructors.</li>
+ * </ul>
+ *
+ * <h2>Lifecycle Management</h2>
+ * <ul>
+ *   <li>{@code revokedAt} is automatically initialized to the current timestamp
+ *       ({@link Instant#now()}) if not explicitly provided.</li>
+ *   <li>{@code expiresAt} must be explicitly provided before persistence to ensure
+ *       correct cleanup of expired revoked-token records.</li>
  * </ul>
  *
  * @author Pragyanshu Rai
@@ -40,7 +52,7 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRevokedToken {
+public class UserRevokedTokenEntity {
 
     /**
      * Composite key representing the unique identity of the revoked token.
@@ -50,6 +62,25 @@ public class UserRevokedToken {
      */
     @EmbeddedId
     private RevokedTokenKey revokedTokenKey;
+
+    /**
+     * The token string value that was revoked.
+     */
+    @Column(name = "token", nullable = false, updatable = false)
+    private String token;
+
+    /**
+     * Type of token that was revoked (e.g., JWT, SHA).
+     */
+    @Column(name = "token_type", nullable = false, updatable = false)
+    private TokenType tokenType;
+
+    /**
+     * Class/category of the revoked token
+     * (e.g., ACCESS, REFRESH, or other custom classification).
+     */
+    @Column(name = "token_class", nullable = false, updatable = false)
+    private TokenClass tokenClass;
 
     /**
      * Timestamp when the token was revoked.
@@ -64,7 +95,8 @@ public class UserRevokedToken {
     /**
      * Timestamp when the revoked token record will expire.
      * <p>
-     * This value must be explicitly set before persistence.
+     * Must be explicitly set before persistence to ensure proper
+     * cleanup and record lifecycle management.
      * </p>
      */
     @Column(name = "expires_at", nullable = false, updatable = false)

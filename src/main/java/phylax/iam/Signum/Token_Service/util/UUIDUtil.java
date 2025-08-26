@@ -1,6 +1,7 @@
 package phylax.iam.Signum.Token_Service.util;
 
 import com.github.f4b6a3.uuid.UuidCreator;
+import phylax.iam.Signum.Token_Service.common.exception.IllegalInstantiationException;
 
 /**
  * Utility class for generating UUID values in different formats.
@@ -13,16 +14,16 @@ import com.github.f4b6a3.uuid.UuidCreator;
  * This class is non-instantiable and intended only for static access.
  * </p>
  */
-public final class UUIDUtils {
+public final class UUIDUtil {
 
     /**
      * Private constructor to prevent instantiation.
      *
-     * @throws UnsupportedOperationException always, since this class
+     * @throws IllegalInstantiationException always, since this class
      *                                       is a static utility holder
      */
-    private UUIDUtils() {
-        throw new UnsupportedOperationException("Utility class can not be instantiated.");
+    private UUIDUtil() {
+        throw new IllegalInstantiationException();
     }
 
 

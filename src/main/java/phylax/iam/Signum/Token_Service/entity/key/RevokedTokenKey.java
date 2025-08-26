@@ -8,19 +8,44 @@ import java.io.Serializable;
 import java.util.UUID;
 
 /**
- * Composite key representation for a revoked token record.
+ * Represents a composite primary key for the {@code RevokedToken} entity.
+ *
  * <p>
- * This embeddable class is used as a composite identifier in the revoked token entity.
- * It uniquely identifies a revoked token by combining:
- * <ul>
- *   <li>{@code userId} – ID of the user associated with the token</li>
- *   <li>{@code tenantId} – ID of the tenant under which the token was issued</li>
- *   <li>{@code deviceId} – ID of the device where the token was used</li>
- *   <li>{@code tokenId} – Unique identifier of the token itself</li>
- * </ul>
- * The {@code revokedAt} timestamp is automatically initialized at persistence
- * if not explicitly provided.
+ * This key uniquely identifies a revoked token in the system by combining:
  * </p>
+ * <ul>
+ *   <li>{@code subject} – The unique identifier (UUIDv7) of the entity
+ *   (e.g., user, tenant, or device) the token was originally issued for.</li>
+ *   <li>{@code tokenId} – The unique identifier (UUIDv7) of the token itself.</li>
+ * </ul>
+ *
+ * <h2>JPA Details</h2>
+ * <ul>
+ *   <li>Annotated with {@link Embeddable} so it can be used as a
+ *   composite key in the {@code RevokedToken} entity.</li>
+ *   <li>Implements {@link Serializable}, as required by JPA for
+ *   composite identifiers.</li>
+ *   <li>Uses {@link EqualsAndHashCode} to ensure consistent behavior
+ *   in equality checks and hash-based collections.</li>
+ * </ul>
+ *
+ * <h2>Lombok Annotations</h2>
+ * <ul>
+ *   <li>{@link Getter}, {@link Setter} – Auto-generates accessor methods.</li>
+ *   <li>{@link Builder} – Provides a fluent API for constructing instances.</li>
+ *   <li>{@link NoArgsConstructor}, {@link AllArgsConstructor} – Generate
+ *   default and all-arguments constructors.</li>
+ *   <li>{@link EqualsAndHashCode} – Ensures identity consistency.</li>
+ * </ul>
+ *
+ * <p>
+ * Note: The {@code revokedAt} timestamp is expected to be handled at the
+ * entity level (not in this key) and is typically initialized automatically
+ * upon persistence if not explicitly provided.
+ * </p>
+ *
+ * @author Pragyanshu Rai
+ * @since 1.0
  */
 @Getter
 @Setter
@@ -32,22 +57,14 @@ import java.util.UUID;
 public class RevokedTokenKey implements Serializable {
 
     /**
-     * Unique identifier of the user to whom the token belonged.
+     * The unique identifier (UUIDv7) of the subject associated with the revoked token.
+     * <p>
+     * This subject may represent a user, tenant, device, or any entity
+     * that the revoked token was originally issued for.
+     * </p>
      */
-    @Column(name = "user_id", nullable = false, updatable = false)
-    private UUID userId;
-
-    /**
-     * Unique identifier of the tenant under which the token was issued.
-     */
-    @Column(name = "tenant_id", nullable = false, updatable = false)
-    private UUID tenantId;
-
-    /**
-     * Unique identifier of the device where the token was used.
-     */
-    @Column(name = "device_id", nullable = false, updatable = false)
-    private UUID deviceId;
+    @Column(name = "subject", nullable = false, updatable = false)
+    private UUID subject;
 
     /**
      * Unique identifier of the token being revoked.

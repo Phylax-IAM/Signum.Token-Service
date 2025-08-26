@@ -1,36 +1,42 @@
 package phylax.iam.Signum.Token_Service.common.constant;
 
 /**
- * Represents the different types of tokens supported by the Signum Token Service.
+ * Enumeration representing the different types of tokens
+ * that can be issued and managed within the system.
+ *
  * <p>
- * Each token type serves a distinct purpose in authentication, authorization,
- * and session management workflows.
+ * This enum is typically used to distinguish between
+ * token formats or generation strategies in the
+ * authentication and authorization process.
  * </p>
  *
  * <ul>
- *   <li><b>AUTHENTICATION</b> – A short-lived access token used to authenticate user requests.</li>
- *   <li><b>REFRESH</b> – A long-lived token used to generate new authentication tokens
- *       without requiring the user to log in again.</li>
- *   <li><b>Temporary</b> – A short-lived token used for special operations such as
- *       password reset, email verification, or multi-factor authentication (MFA).</li>
+ *   <li>{@link #JWT} - JSON Web Token, commonly used for stateless
+ *       authentication and token-based access control.</li>
+ *   <li>{@link #SHA} - Token generated using a hashing algorithm
+ *       (e.g., SHA-based), useful for opaque tokens or
+ *       internal system tokens.</li>
  * </ul>
- *
- * <p>
- * Example usage:
- * <pre>{@code
- * TokenType type = TokenType.AUTHENTICATION;
- * if (type == TokenType.REFRESH) {
- *     // handle REFRESH logic
- * }
- * }</pre>
- * </p>
  */
 public enum TokenType {
 
-    AUTHENTICATION,
+    /**
+     * JSON Web Token (JWT).
+     * <p>
+     * Encoded, self-contained token that carries claims
+     * about the user and is cryptographically signed.
+     * </p>
+     */
+    JWT,
 
-    REFRESH,
-
-    TEMPORARY
+    /**
+     * SHA-based token.
+     * <p>
+     * Opaque token generated using a hashing algorithm
+     * such as SHA-256. Typically does not expose claims
+     * directly in the token payload.
+     * </p>
+     */
+    SHA
 
 }
