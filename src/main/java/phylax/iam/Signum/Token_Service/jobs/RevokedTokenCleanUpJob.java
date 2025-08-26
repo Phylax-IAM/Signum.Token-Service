@@ -9,7 +9,7 @@ import phylax.iam.Signum.Token_Service.common.annotation.LogExecutionTime;
 import phylax.iam.Signum.Token_Service.common.annotation.LogInfoAround;
 import phylax.iam.Signum.Token_Service.common.contract.ScheduledJobContract;
 import phylax.iam.Signum.Token_Service.repository.UserRevokedTokenRepository;
-import phylax.iam.Signum.Token_Service.common.util.LogUtil;
+import phylax.iam.Signum.Token_Service.common.util.logging.LogUtil;
 
 import java.time.Instant;
 

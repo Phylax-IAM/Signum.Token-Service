@@ -69,8 +69,8 @@ public class UserActiveTokenEntity {
      * a time-based UUID strategy.
      */
     @GeneratedValue
-    @Column(name = "token_id", nullable = false, updatable = false)
     @UuidGenerator(style = UuidGenerator.Style.TIME)
+    @Column(name = "token_id", nullable = false, updatable = false)
     private UUID tokenId;
 
     /**

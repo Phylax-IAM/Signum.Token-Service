@@ -1,10 +1,13 @@
 package phylax.iam.Signum.Token_Service.common.security;
 
+import phylax.iam.Signum.Token_Service.common.persist.Persistable;
+
 import javax.crypto.SecretKey;
 import javax.crypto.KeyGenerator;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import java.util.Optional;
+
+import static phylax.iam.Signum.Token_Service.common.util.secret.SecretUtil.fromBase64String;
 
 /**
  * Utility class for generating, encoding, and decoding {@link SecretKey} instances.
@@ -27,27 +30,22 @@ import java.util.Base64;
 public final class SecretKeyGenerator {
 
     /**
-     * Reconstructs a {@link SecretKey} from its Base64-encoded string representation.
-     *
-     * @param base64Key the Base64-encoded key string
-     * @param type the key algorithm (e.g., "AES", "HmacSHA256")
-     * @return the reconstructed {@link SecretKey}
+     * Abstraction for persisting generated keys.
+     * <p>
+     * The first type parameter represents the key identifier (e.g., a name or alias),
+     * while the second represents the serialized form of the secret (e.g., Base64 string).
+     * </p>
      */
-    public static SecretKey fromBase64String(String base64Key, String type) {
-        byte[] decodedKey = Base64.getDecoder().decode(base64Key);
-        return new SecretKeySpec(decodedKey, 0, decodedKey.length, type);
-    }
+    private final Persistable<String, String> persistable;
 
     /**
-     * Encodes a {@link SecretKey} into a Base64 string.
+     * Creates a new {@code SecretKeyGenerator} with the given persistence mechanism.
      *
-     * <p>This allows safe storage or transfer of keys as text.</p>
-     *
-     * @param secretKey the key to encode
-     * @return the Base64-encoded key string
+     * @param persistable the persistence abstraction used for storing and retrieving keys;
+     *                    must not be {@code null}
      */
-    public static String toBase64String(SecretKey secretKey) {
-        return Base64.getEncoder().encodeToString(secretKey.getEncoded());
+    public SecretKeyGenerator(Persistable<String, String> persistable) {
+        this.persistable = persistable;
     }
 
     /**
@@ -58,7 +56,7 @@ public final class SecretKeyGenerator {
      * @return the newly generated {@link SecretKey}
      * @throws NoSuchAlgorithmException if the specified algorithm is not available
      */
-    public static SecretKey generateKey(int keySize, String type) throws NoSuchAlgorithmException {
+    public SecretKey generateKey(int keySize, String type) throws NoSuchAlgorithmException {
         KeyGenerator keyGenerator = KeyGenerator.getInstance(type);
         keyGenerator.init(keySize);
         return keyGenerator.generateKey();
@@ -77,14 +75,14 @@ public final class SecretKeyGenerator {
      * @return the fetched or newly generated {@link SecretKey}
      * @throws NoSuchAlgorithmException if the specified algorithm is not available
      */
-    public static SecretKey fetchOrGenerateKey(String secretKeyName, int keySize, String type) throws NoSuchAlgorithmException {
-        String secretKeyString = System.getenv(secretKeyName);
+    public SecretKey fetchOrGenerateKey(String secretKeyName, int keySize, String type) throws NoSuchAlgorithmException {
+        Optional<String> secretKeyString = persistable.read(secretKeyName);
         SecretKey secretKey;
 
-        if(secretKeyString == null) {
+        if(secretKeyString.isEmpty()) {
             secretKey = generateKey(keySize, type);
         } else {
-            secretKey = fromBase64String(secretKeyString, type);
+            secretKey = fromBase64String(secretKeyString.get(), type);
         }
         return secretKey;
     }

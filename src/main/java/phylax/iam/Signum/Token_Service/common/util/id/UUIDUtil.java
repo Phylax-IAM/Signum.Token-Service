@@ -1,4 +1,4 @@
-package phylax.iam.Signum.Token_Service.common.util;
+package phylax.iam.Signum.Token_Service.common.util.id;
 
 import com.github.f4b6a3.uuid.UuidCreator;
 import phylax.iam.Signum.Token_Service.common.exception.IllegalInstantiationException;
