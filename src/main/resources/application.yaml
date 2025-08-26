@@ -47,5 +47,6 @@ spring:
 # Scheduled jobs configuration
 scheduler:
   revoked-token-cleanup:
-    seconds: 300
+    #5 minutes
+    delay: 5m
 

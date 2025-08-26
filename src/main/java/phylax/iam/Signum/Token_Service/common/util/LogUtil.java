@@ -1,4 +1,4 @@
-package phylax.iam.Signum.Token_Service.util;
+package phylax.iam.Signum.Token_Service.common.util;
 
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;

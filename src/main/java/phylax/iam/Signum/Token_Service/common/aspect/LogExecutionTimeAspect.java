@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import phylax.iam.Signum.Token_Service.util.LogUtil;
+import phylax.iam.Signum.Token_Service.common.util.LogUtil;
 import phylax.iam.Signum.Token_Service.common.annotation.LogExecutionTime;
 
 
