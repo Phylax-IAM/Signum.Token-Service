@@ -18,7 +18,7 @@ package phylax.iam.Signum.Token_Service.common.constant;
  *       internal system tokens.</li>
  * </ul>
  */
-public enum TokenType {
+public enum TokenTypeConstant {
 
     /**
      * JSON Web Token (JWT).

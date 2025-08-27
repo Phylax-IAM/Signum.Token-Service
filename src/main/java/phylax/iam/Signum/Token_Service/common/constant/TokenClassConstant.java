@@ -26,13 +26,13 @@ package phylax.iam.Signum.Token_Service.common.constant;
  *
  * <p><b>Example usage:</b></p>
  * <pre>{@code
- * TokenClass type = TokenClass.AUTHENTICATION;
- * if (type == TokenClass.REFRESH) {
+ * TokenClassConstant type = TokenClassConstant.AUTHENTICATION;
+ * if (type == TokenClassConstant.REFRESH) {
  *     // Handle refresh token logic
  * }
  * }</pre>
  */
-public enum TokenClass {
+public enum TokenClassConstant {
 
     /**
      * Short-lived token for authenticating user requests.

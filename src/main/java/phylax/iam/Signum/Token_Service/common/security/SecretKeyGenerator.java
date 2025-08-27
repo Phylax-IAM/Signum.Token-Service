@@ -1,5 +1,9 @@
 package phylax.iam.Signum.Token_Service.common.security;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import phylax.iam.Signum.Token_Service.common.constant.SecretAlgorithmConstant;
+import phylax.iam.Signum.Token_Service.common.constant.SecretKeyTypeConstant;
 import phylax.iam.Signum.Token_Service.common.persist.Persistable;
 
 import javax.crypto.SecretKey;
@@ -7,7 +11,7 @@ import javax.crypto.KeyGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
-import static phylax.iam.Signum.Token_Service.common.util.secret.SecretUtil.fromBase64String;
+import phylax.iam.Signum.Token_Service.common.util.secret.SecretUtil;
 
 /**
  * Utility class for generating, encoding, and decoding {@link SecretKey} instances.
@@ -27,6 +31,7 @@ import static phylax.iam.Signum.Token_Service.common.util.secret.SecretUtil.from
  * @see javax.crypto.KeyGenerator
  * @see javax.crypto.spec.SecretKeySpec
  */
+@Component
 public final class SecretKeyGenerator {
 
     /**
@@ -36,7 +41,7 @@ public final class SecretKeyGenerator {
      * while the second represents the serialized form of the secret (e.g., Base64 string).
      * </p>
      */
-    private final Persistable<String, String> persistable;
+    private final Persistable<SecretKeyTypeConstant, String> persistable;
 
     /**
      * Creates a new {@code SecretKeyGenerator} with the given persistence mechanism.
@@ -44,7 +49,7 @@ public final class SecretKeyGenerator {
      * @param persistable the persistence abstraction used for storing and retrieving keys;
      *                    must not be {@code null}
      */
-    public SecretKeyGenerator(Persistable<String, String> persistable) {
+    public SecretKeyGenerator(@Qualifier("inMemoryPersistable") Persistable<SecretKeyTypeConstant, String> persistable) {
         this.persistable = persistable;
     }
 
@@ -75,14 +80,15 @@ public final class SecretKeyGenerator {
      * @return the fetched or newly generated {@link SecretKey}
      * @throws NoSuchAlgorithmException if the specified algorithm is not available
      */
-    public SecretKey fetchOrGenerateKey(String secretKeyName, int keySize, String type) throws NoSuchAlgorithmException {
+    public SecretKey fetchOrGenerateKey(SecretKeyTypeConstant secretKeyName, int keySize, String type) throws NoSuchAlgorithmException {
         Optional<String> secretKeyString = persistable.read(secretKeyName);
         SecretKey secretKey;
 
         if(secretKeyString.isEmpty()) {
             secretKey = generateKey(keySize, type);
+            persistable.write(secretKeyName, SecretUtil.toBase64String(secretKey));
         } else {
-            secretKey = fromBase64String(secretKeyString.get(), type);
+            secretKey = SecretUtil.fromBase64String(secretKeyString.get(), type);
         }
         return secretKey;
     }

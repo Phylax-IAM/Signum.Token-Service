@@ -3,7 +3,7 @@ package phylax.iam.Signum.Token_Service.entity.key;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.*;
-import phylax.iam.Signum.Token_Service.common.constant.TokenClass;
+import phylax.iam.Signum.Token_Service.common.constant.TokenClassConstant;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -17,7 +17,7 @@ import java.util.UUID;
  * <ul>
  *   <li>{@code subject} – The unique identifier (UUIDv7) of the entity
  *   (e.g., user, tenant, or device) the token is issued for.</li>
- *   <li>{@code tokenClass} – The classification of the token that
+ *   <li>{@code tokenClassConstant} – The classification of the token that
  *   distinguishes its purpose, such as authentication, refresh,
  *   or temporary usage.</li>
  * </ul>
@@ -41,7 +41,7 @@ import java.util.UUID;
  *   and proper use in hash-based collections.</li>
  * </ul>
  *
- * @see TokenClass
+ * @see TokenClassConstant
  * @author Pragyanshu Rai
  * @since 1.0
  */
@@ -69,10 +69,10 @@ public class ActiveTokenKey implements Serializable {
      * authentication and authorization flows.
      *
      * <p>
-     * Possible values are defined in {@link TokenClass}, such as
+     * Possible values are defined in {@link TokenClassConstant}, such as
      * {@code AUTHENTICATION}, {@code REFRESH}, or {@code TEMPORARY}.
      * </p>
      */
     @Column(name = "token_class", nullable = false, updatable = false)
-    private TokenClass tokenClass;
+    private TokenClassConstant tokenClassConstant;
 }

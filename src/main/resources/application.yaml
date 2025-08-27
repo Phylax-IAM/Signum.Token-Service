@@ -50,3 +50,7 @@ scheduler:
     #5 minutes
     delay: 5m
 
+
+# Token configuration
+token:
+  payloadKeyName: payload

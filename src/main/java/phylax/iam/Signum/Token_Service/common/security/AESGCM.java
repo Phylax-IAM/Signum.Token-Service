@@ -1,5 +1,7 @@
 package phylax.iam.Signum.Token_Service.common.security;
 
+import phylax.iam.Signum.Token_Service.common.constant.SecretAlgorithmConstant;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
@@ -33,10 +35,8 @@ import java.util.Base64;
  */
 public final class AESGCM {
 
-    private static final String AES_ALGO = "AES";
-    private static final String AES_GCM_NO_PADDING = "AES/GCM/NoPadding";
-    private static final int GCM_TAG_LENGTH = 128;
     private static final int IV_LENGTH = 12;
+    private static final int GCM_TAG_LENGTH = 128;
 
     private AESGCM() {}
 
@@ -51,7 +51,7 @@ public final class AESGCM {
      * @throws Exception if the cipher cannot be initialized
      */
     private static Cipher getInitCipher(SecretKey key, byte[] iv, int cipherMode) throws Exception {
-        Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
+        Cipher cipher = Cipher.getInstance(SecretAlgorithmConstant.AES_GCM_NOPADDING.getAlgorithm());
         GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
         cipher.init(cipherMode, key, gcmParameterSpec);
         return cipher;

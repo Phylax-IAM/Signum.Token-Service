@@ -1,5 +1,6 @@
 package phylax.iam.Signum.Token_Service.common.persist.impl;
 
+import phylax.iam.Signum.Token_Service.common.collection.LRUCache;
 import phylax.iam.Signum.Token_Service.common.persist.Persistable;
 
 import java.util.Optional;
@@ -21,7 +22,7 @@ public final class InMemoryPersistable<T, R> implements Persistable<T, R> {
     /**
      * Internal cache for storing key-value pairs in memory.
      */
-    private final ConcurrentHashMap<T, R> cache = new ConcurrentHashMap<>();
+    private final LRUCache<T, R> lruCache = new LRUCache<>();
 
     /**
      * Retrieves the value associated with the given key from memory.
@@ -32,7 +33,7 @@ public final class InMemoryPersistable<T, R> implements Persistable<T, R> {
      */
     @Override
     public Optional<R> read(T key) {
-        return Optional.ofNullable(cache.getOrDefault(key, null));
+        return Optional.ofNullable(lruCache.getOrDefault(key, null));
     }
 
     /**
@@ -46,6 +47,6 @@ public final class InMemoryPersistable<T, R> implements Persistable<T, R> {
      */
     @Override
     public void write(T key, R value) {
-        cache.put(key, value);
+        lruCache.put(key, value);
     }
 }

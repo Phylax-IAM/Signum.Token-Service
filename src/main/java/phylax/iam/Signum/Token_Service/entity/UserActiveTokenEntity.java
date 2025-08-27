@@ -8,10 +8,8 @@ import lombok.*;
 
 import jakarta.persistence.*;
 
-import org.hibernate.annotations.UuidGenerator;
-
-import phylax.iam.Signum.Token_Service.common.constant.TokenType;
 import phylax.iam.Signum.Token_Service.entity.key.ActiveTokenKey;
+import phylax.iam.Signum.Token_Service.common.constant.TokenTypeConstant;
 
 /**
  * Entity representing an active token issued to a user.
@@ -65,11 +63,8 @@ public class UserActiveTokenEntity {
     private ActiveTokenKey activeTokenKey;
 
     /**
-     * Unique identifier for the token, generated automatically using
-     * a time-based UUID strategy.
+     * Unique identifier for the token.
      */
-    @GeneratedValue
-    @UuidGenerator(style = UuidGenerator.Style.TIME)
     @Column(name = "token_id", nullable = false, updatable = false)
     private UUID tokenId;
 
@@ -80,10 +75,10 @@ public class UserActiveTokenEntity {
     private String token;
 
     /**
-     * Cryptographic type of token (e.g., {@link TokenType#JWT}, {@link TokenType#SHA}).
+     * Cryptographic type of token (e.g., {@link TokenTypeConstant#JWT}, {@link TokenTypeConstant#SHA}).
      */
     @Column(name = "token_type", nullable = false, updatable = false)
-    private TokenType tokenType;
+    private TokenTypeConstant tokenTypeConstant;
 
     /**
      * Timestamp at which the token was issued.
