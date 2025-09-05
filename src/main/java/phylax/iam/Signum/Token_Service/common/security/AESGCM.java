@@ -1,6 +1,7 @@
 package phylax.iam.Signum.Token_Service.common.security;
 
 import phylax.iam.Signum.Token_Service.common.constant.SecretAlgorithmConstant;
+import phylax.iam.Signum.Token_Service.common.exception.IllegalInstantiationException;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -38,7 +39,9 @@ public final class AESGCM {
     private static final int IV_LENGTH = 12;
     private static final int GCM_TAG_LENGTH = 128;
 
-    private AESGCM() {}
+    private AESGCM() {
+        throw new IllegalInstantiationException();
+    }
 
     /**
      * Initializes and returns a {@link Cipher} instance configured for AES-GCM

@@ -3,7 +3,6 @@ package phylax.iam.Signum.Token_Service.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import phylax.iam.Signum.Token_Service.common.constant.TokenClassConstant;
-import phylax.iam.Signum.Token_Service.common.constant.TokenTypeConstant;
 import phylax.iam.Signum.Token_Service.entity.key.RevokedTokenKey;
 
 import java.time.Instant;
@@ -68,12 +67,6 @@ public class UserRevokedTokenEntity {
      */
     @Column(name = "token", nullable = false, updatable = false)
     private String token;
-
-    /**
-     * Type of token that was revoked (e.g., JWT, SHA).
-     */
-    @Column(name = "token_type", nullable = false, updatable = false)
-    private TokenTypeConstant tokenTypeConstant;
 
     /**
      * Class/category of the revoked token

@@ -4,7 +4,6 @@ import lombok.*;
 import java.util.UUID;
 
 import phylax.iam.Signum.Token_Service.common.constant.TokenClassConstant;
-import phylax.iam.Signum.Token_Service.common.constant.TokenTypeConstant;
 
 
 /**
@@ -59,15 +58,6 @@ public final class RefreshTokenPayloadDTO {
      * </p>
      */
     private UUID subject;
-
-    /**
-     * The type of the token.
-     * <p>
-     * Represented by {@link TokenTypeConstant}, this defines the specific
-     * token usage type (e.g., ACCESS, REFRESH).
-     * </p>
-     */
-    private TokenTypeConstant tokenTypeConstant;
 
     /**
      * The classification of the token.

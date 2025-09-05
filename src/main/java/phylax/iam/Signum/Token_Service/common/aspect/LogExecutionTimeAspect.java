@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import phylax.iam.Signum.Token_Service.common.util.logging.LogUtil;
 import phylax.iam.Signum.Token_Service.common.annotation.LogExecutionTime;
+import phylax.iam.Signum.Token_Service.common.util.logging.LoggerUtil;
 
 
 /**
@@ -51,12 +52,6 @@ import phylax.iam.Signum.Token_Service.common.annotation.LogExecutionTime;
 public class LogExecutionTimeAspect {
 
     /**
-     * Utility for formatting log messages with service name.
-     */
-    @Autowired
-    private LogUtil logUtil;
-
-    /**
      * Logger for recording execution time messages.
      */
     private final Logger logger = LoggerFactory.getLogger(LogExecutionTimeAspect.class);
@@ -66,14 +61,14 @@ public class LogExecutionTimeAspect {
      *
      * @param proceedingJoinPoint the join point representing the intercepted method call
      * @return the result of the intercepted method call
-     * @throws Throwable if the intercepted method throws any exception
+     * @throws Throwable if the intercepted method throws any interceptor
      */
     @Around("@annotation(LogExecutionTime)")
     public Object logExecutionTimeMethod(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         Object result = proceedingJoinPoint.proceed();
         long endTime = System.currentTimeMillis();
-        logger.info(logUtil.format(String.format("%s took %d ms", proceedingJoinPoint.getSignature(), (endTime - startTime))));
+        LoggerUtil.logInfo(logger, String.format("%s took %d ms", proceedingJoinPoint.getSignature(), (endTime - startTime)));
         return result;
     }
 }

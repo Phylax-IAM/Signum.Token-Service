@@ -3,13 +3,13 @@ package phylax.iam.Signum.Token_Service.common.exception;
 /**
  * Exception thrown to indicate that a code length value is invalid.
  * <p>
- * This exception is specifically used when a code length falls outside
+ * This interceptor is specifically used when a code length falls outside
  * the supported range of {@code (0, 128]}. For example, a value less than
- * or equal to {@code 0}, or greater than {@code 128}, will trigger this exception.
+ * or equal to {@code 0}, or greater than {@code 128}, will trigger this interceptor.
  * </p>
  *
  * <p>
- * This is a runtime exception and does not need to be declared
+ * This is a runtime interceptor and does not need to be declared
  * in a method's {@code throws} clause.
  * </p>
  */
@@ -26,7 +26,7 @@ public class IllegalCodeLengthException extends RuntimeException {
   /**
    * Constructs a new {@code IllegalCodeLengthException} with the specified detail message.
    *
-   * @param message the detail message explaining the cause of the exception
+   * @param message the detail message explaining the cause of the interceptor
    */
   public IllegalCodeLengthException(String message) {
     super(message);

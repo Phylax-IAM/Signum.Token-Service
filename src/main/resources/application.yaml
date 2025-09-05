@@ -3,8 +3,6 @@ server:
   port: ${APPLICATION_PORT}
   address: ${APPLICATION_HOST}
 
-
-
 # Spring configuration
 spring:
 
@@ -50,7 +48,11 @@ scheduler:
     #5 minutes
     delay: 5m
 
-
 # Token configuration
 token:
   payloadKeyName: payload
+
+# Logging Configuration
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}

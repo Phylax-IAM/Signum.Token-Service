@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package phylax.iam.signum;
+
+option java_multiple_files = true;
+option java_package = "phylax.iam.signum";
+option java_outer_classname = "commonProto";
+
+enum TokenClassConstant {
+    AUTHENTICATION = 0;
+    REFRESH = 1;
+    TEMPORARY = 2;
+}
+

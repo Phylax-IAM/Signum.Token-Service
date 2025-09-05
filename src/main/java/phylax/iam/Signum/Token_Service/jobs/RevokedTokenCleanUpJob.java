@@ -5,9 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import phylax.iam.Signum.Token_Service.common.annotation.LogExecutionTime;
 import phylax.iam.Signum.Token_Service.common.annotation.LogInfoAround;
 import phylax.iam.Signum.Token_Service.common.contract.ScheduledJobContract;
+import phylax.iam.Signum.Token_Service.common.util.logging.LoggerUtil;
 import phylax.iam.Signum.Token_Service.repository.UserRevokedTokenRepository;
 import phylax.iam.Signum.Token_Service.common.util.logging.LogUtil;
 
@@ -46,9 +48,6 @@ public class RevokedTokenCleanUpJob implements ScheduledJobContract {
     @Autowired
     private UserRevokedTokenRepository userRevokedTokenRepository;
 
-    @Autowired
-    private LogUtil logUtil;
-
     private final Logger logger = LoggerFactory.getLogger(RevokedTokenCleanUpJob.class);
 
     /**
@@ -65,6 +64,7 @@ public class RevokedTokenCleanUpJob implements ScheduledJobContract {
     @Scheduled(
             fixedDelayString = "${scheduler.revoked-token-cleanup.delay:5m}"
     )
+    @Transactional
     @LogInfoAround(
             logBefore = "Running RevokedTokenCleanUpJob with the time delay:" + "${scheduler.revoked-token-cleanup.delay:5m}",
             logAfter = "RevokedTokenCleanUpJob ran successfully"
@@ -73,7 +73,7 @@ public class RevokedTokenCleanUpJob implements ScheduledJobContract {
     public void execute() {
 
         if(this.userRevokedTokenRepository == null) {
-            logger.warn(logUtil.format("The userRevokedTokenRepository is not yet initialized"));
+            LoggerUtil.logWarn(logger, "The userRevokedTokenRepository is not yet initialized");
         } else {
             this.userRevokedTokenRepository.deleteExpiredToken(
                     Instant.now()

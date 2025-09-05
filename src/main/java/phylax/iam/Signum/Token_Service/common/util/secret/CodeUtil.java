@@ -3,6 +3,7 @@ package phylax.iam.Signum.Token_Service.common.util.secret;
 import java.security.SecureRandom;
 
 import phylax.iam.Signum.Token_Service.common.exception.IllegalCodeLengthException;
+import phylax.iam.signum.CodeClassConstant;
 
 
 /**
@@ -121,6 +122,29 @@ public final class CodeUtil {
             }
         }
         return code.toString();
+    }
+
+    /**
+     * Generates a secure code string based on the specified {@link CodeClassConstant}.
+     * <p>
+     * Supports numeric, alphabetical, and alphanumeric formats.
+     * </p>
+     *
+     * @param codeClassConstant The type of code to generate.
+     * @param codeLength        The length of the code.
+     * @return The generated code as a {@link String}.
+     */
+    public static String generateCodeByType(CodeClassConstant codeClassConstant, int codeLength) {
+        String code;
+
+        if (codeClassConstant == CodeClassConstant.NUMERIC) {
+            code = CodeUtil.generateIntegerCodeAsString(codeLength);
+        } else if (codeClassConstant == CodeClassConstant.ALPHABETICAL) {
+            code = CodeUtil.generateAlphabeticalCode(codeLength);
+        } else {
+            code = CodeUtil.generateAlphaNumericCode(codeLength);
+        }
+        return code;
     }
 }
 

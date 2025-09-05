@@ -1,6 +1,8 @@
 package phylax.iam.Signum.Token_Service.repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -49,6 +51,11 @@ public interface UserActiveTokenRepository extends JpaRepository<UserActiveToken
      */
     Optional<UserActiveTokenEntity> findByActiveTokenKey(ActiveTokenKey activeTokenKey);
 
+    @Query("SELECT at FROM UserActiveTokenEntity at WHERE at.activeTokenKey.subject = :targetSubject")
+    List<UserActiveTokenEntity> findBySubject(@Param("targetSubject") UUID subject);
+
+    @Query("SELECT COUNT(*) FROM UserActiveTokenEntity at WHERE at.activeTokenKey.subject = :targetSubject")
+    long countBySubject(@Param("targetSubject") UUID subject);
     // Update
 
     // Delete
@@ -66,4 +73,8 @@ public interface UserActiveTokenRepository extends JpaRepository<UserActiveToken
     @Modifying
     @Query("DELETE FROM UserActiveTokenEntity at WHERE at.activeTokenKey = :targetKey")
     void deleteTokenByActiveKey(@Param("targetKey") ActiveTokenKey activeTokenKey);
+
+    @Modifying
+    @Query("DELETE FROM UserActiveTokenEntity at WHERE at.activeTokenKey.subject = :targetSubject")
+    void deleteTokensBySubject(@Param("targetSubject") UUID subject);
 }

@@ -42,7 +42,7 @@ public class IllegalInstantiationException extends RuntimeException {
     /**
      * Constructs a new {@code IllegalInstantiationException} with the specified detail message.
      *
-     * @param message the detail message to include in the exception
+     * @param message the detail message to include in the interceptor
      */
     public IllegalInstantiationException(String message) {
         super(message);

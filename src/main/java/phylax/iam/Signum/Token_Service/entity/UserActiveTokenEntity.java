@@ -9,7 +9,6 @@ import lombok.*;
 import jakarta.persistence.*;
 
 import phylax.iam.Signum.Token_Service.entity.key.ActiveTokenKey;
-import phylax.iam.Signum.Token_Service.common.constant.TokenTypeConstant;
 
 /**
  * Entity representing an active token issued to a user.
@@ -73,12 +72,6 @@ public class UserActiveTokenEntity {
      */
     @Column(name = "token_type", nullable = false, updatable = false)
     private String token;
-
-    /**
-     * Cryptographic type of token (e.g., {@link TokenTypeConstant#JWT}, {@link TokenTypeConstant#SHA}).
-     */
-    @Column(name = "token_type", nullable = false, updatable = false)
-    private TokenTypeConstant tokenTypeConstant;
 
     /**
      * Timestamp at which the token was issued.

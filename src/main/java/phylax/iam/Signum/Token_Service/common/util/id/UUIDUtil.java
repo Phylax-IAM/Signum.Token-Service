@@ -1,5 +1,6 @@
 package phylax.iam.Signum.Token_Service.common.util.id;
 
+import java.util.Optional;
 import java.util.UUID;
 import com.github.f4b6a3.uuid.UuidCreator;
 
@@ -51,21 +52,34 @@ public final class UUIDUtil {
     }
 
     /**
-     * Verifies whether a given string represents a UUID of the specified version.
+     * Verifies whether the given string represents a valid {@link UUID} of the specified version.
      *
-     * @param uuidString    the UUID string to check
-     * @param targetVersion the expected UUID version (e.g., 7 for UUIDv7)
-     * @return {@code true} if the string is a valid UUID of the given version,
-     *         {@code false} otherwise
+     * <p>
+     * This method attempts to parse the input string into a {@link UUID}. If parsing fails,
+     * a {@link UUIDException} is thrown. If the parsed UUID does not match the expected version,
+     * another {@link UUIDException} is thrown indicating the mismatch.
+     * </p>
+     *
+     * @param uuidString    the string representation of the UUID to validate; must not be {@code null}
+     * @param targetVersion the expected UUID version (e.g., {@code 7})
+     * @return the parsed {@link UUID} if valid and matching the specified version
+     * @throws UUIDException if the input string is not a valid UUID, or if the UUID does not
+     *                       match the given {@code targetVersion}
+     * @throws NullPointerException if {@code uuidString} is {@code null}
+     * @see UUID
      */
-    public static boolean verifyIsStringUUIDv7(String uuidString, int targetVersion) {
+    public static UUID verifyIsStringUUIDTargetVersion(String uuidString, int targetVersion) {
         UUID uuid;
         try {
             uuid = extractUUIDFromString(uuidString);
         } catch (IllegalArgumentException illegalArgumentException) {
-            return false;
+            throw new UUIDException("This is not a valid UUID String");
         }
-        return uuid.version() == targetVersion;
+
+        if(uuid.version() != targetVersion) {
+            throw new UUIDException("This is not a valid UUIDv"+targetVersion+" String");
+        }
+        return uuid;
     }
 
     /**

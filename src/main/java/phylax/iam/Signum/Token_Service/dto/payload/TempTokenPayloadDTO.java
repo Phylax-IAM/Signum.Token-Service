@@ -4,7 +4,6 @@ import lombok.*;
 import java.util.UUID;
 
 import phylax.iam.Signum.Token_Service.common.constant.TokenClassConstant;
-import phylax.iam.Signum.Token_Service.common.constant.TokenTypeConstant;
 
 
 /**
@@ -30,10 +29,8 @@ import phylax.iam.Signum.Token_Service.common.constant.TokenTypeConstant;
  *   Pragyanshu Rai
  * @since 1.0
  */
-@Getter
-@Setter
+@Data
 @Builder
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public final class TempTokenPayloadDTO {
@@ -52,15 +49,6 @@ public final class TempTokenPayloadDTO {
      * </p>
      */
     private String oneTimeCode;
-
-    /**
-     * The type of the token.
-     * <p>
-     * Represented by {@link TokenTypeConstant}, this defines the
-     * specific token usage type (e.g., TEMPORARY, REFRESH).
-     * </p>
-     */
-    private TokenTypeConstant tokenTypeConstant;
 
     /**
      * The classification of the token.

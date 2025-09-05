@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import phylax.iam.Signum.Token_Service.common.util.logging.LogUtil;
 import phylax.iam.Signum.Token_Service.common.annotation.LogInfoAround;
+import phylax.iam.Signum.Token_Service.common.util.logging.LoggerUtil;
 
 /**
  * Aspect for handling logging around methods annotated with {@link LogInfoAround}.
@@ -55,12 +56,6 @@ import phylax.iam.Signum.Token_Service.common.annotation.LogInfoAround;
 public class LogInfoAroundAspect {
 
     /**
-     * Utility for formatting log messages with service name.
-     */
-    @Autowired
-    private LogUtil logUtil;
-
-    /**
      * Logger for recording log messages.
      */
     private final Logger logger = LoggerFactory.getLogger(LogInfoAroundAspect.class);
@@ -76,13 +71,13 @@ public class LogInfoAroundAspect {
      * @param proceedingJoinPoint the join point representing the intercepted method call
      * @param logInfoAround the annotation instance containing log message configuration
      * @return the result of the intercepted method call
-     * @throws Throwable if the intercepted method throws any exception
+     * @throws Throwable if the intercepted method throws any interceptor
      */
     @Around("@annotation(LogInfoAround)")
     public Object logInfoAroundMethod(ProceedingJoinPoint proceedingJoinPoint, LogInfoAround logInfoAround) throws Throwable {
-        logger.info(logUtil.format(logInfoAround.logBefore()));
+        LoggerUtil.logInfo(logger, logInfoAround.logBefore());
         Object result = proceedingJoinPoint.proceed();
-        logger.info(logUtil.format(logInfoAround.logAfter()));
+        LoggerUtil.logInfo(logger, logInfoAround.logAfter());
         return result;
     }
 }

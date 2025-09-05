@@ -2,9 +2,8 @@ package phylax.iam.Signum.Token_Service.common.security;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import phylax.iam.Signum.Token_Service.common.constant.SecretAlgorithmConstant;
 import phylax.iam.Signum.Token_Service.common.constant.SecretKeyTypeConstant;
-import phylax.iam.Signum.Token_Service.common.persist.Persistable;
+import phylax.iam.Signum.Token_Service.common.contract.PersistableContract;
 
 import javax.crypto.SecretKey;
 import javax.crypto.KeyGenerator;
@@ -41,16 +40,16 @@ public final class SecretKeyGenerator {
      * while the second represents the serialized form of the secret (e.g., Base64 string).
      * </p>
      */
-    private final Persistable<SecretKeyTypeConstant, String> persistable;
+    private final PersistableContract<SecretKeyTypeConstant, String> persistableContract;
 
     /**
      * Creates a new {@code SecretKeyGenerator} with the given persistence mechanism.
      *
-     * @param persistable the persistence abstraction used for storing and retrieving keys;
+     * @param persistableContract the persistence abstraction used for storing and retrieving keys;
      *                    must not be {@code null}
      */
-    public SecretKeyGenerator(@Qualifier("inMemoryPersistable") Persistable<SecretKeyTypeConstant, String> persistable) {
-        this.persistable = persistable;
+    public SecretKeyGenerator(@Qualifier("inMemoryCache") PersistableContract<SecretKeyTypeConstant, String> persistableContract) {
+        this.persistableContract = persistableContract;
     }
 
     /**
@@ -81,12 +80,12 @@ public final class SecretKeyGenerator {
      * @throws NoSuchAlgorithmException if the specified algorithm is not available
      */
     public SecretKey fetchOrGenerateKey(SecretKeyTypeConstant secretKeyName, int keySize, String type) throws NoSuchAlgorithmException {
-        Optional<String> secretKeyString = persistable.read(secretKeyName);
+        Optional<String> secretKeyString = persistableContract.read(secretKeyName);
         SecretKey secretKey;
 
         if(secretKeyString.isEmpty()) {
             secretKey = generateKey(keySize, type);
-            persistable.write(secretKeyName, SecretUtil.toBase64String(secretKey));
+            persistableContract.write(secretKeyName, SecretUtil.toBase64String(secretKey));
         } else {
             secretKey = SecretUtil.fromBase64String(secretKeyString.get(), type);
         }

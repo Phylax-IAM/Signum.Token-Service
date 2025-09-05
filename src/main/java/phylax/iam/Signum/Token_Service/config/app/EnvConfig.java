@@ -1,4 +1,4 @@
-package phylax.iam.Signum.Token_Service.config.env;
+package phylax.iam.Signum.Token_Service.config.app;
 
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;

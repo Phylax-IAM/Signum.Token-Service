@@ -1,9 +1,9 @@
 package phylax.iam.Signum.Token_Service.common.exception;
 
 /**
- * Custom runtime exception to indicate errors during UUID operations.
+ * Custom runtime interceptor to indicate errors during UUID operations.
  * <p>
- * This exception is typically thrown when an illegal or invalid operation
+ * This interceptor is typically thrown when an illegal or invalid operation
  * related to UUID creation, parsing, or validation occurs.
  * </p>
  *
@@ -33,7 +33,7 @@ public class UUIDException extends RuntimeException {
     /**
      * Constructs a new {@code UUIDException} with the specified detail message.
      *
-     * @param message the detail message explaining the cause of the exception
+     * @param message the detail message explaining the cause of the interceptor
      */
     public UUIDException(String message) {
         super(message);

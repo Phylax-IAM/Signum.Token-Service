@@ -3,7 +3,7 @@ package phylax.iam.Signum.Token_Service.common.exception;
 /**
  * Exception thrown to indicate a failure during token hashing operations.
  * <p>
- * This exception is typically raised when the system is unable to generate
+ * This interceptor is typically raised when the system is unable to generate
  * or process a secure hash for a token due to invalid inputs, unsupported
  * algorithms, or cryptographic errors.
  * </p>
@@ -38,7 +38,7 @@ public class HashingException extends RuntimeException {
   }
 
   /**
-   * Returns the detail message string of this exception.
+   * Returns the detail message string of this interceptor.
    *
    * @return the detail message string, or {@code null} if none was provided
    */
@@ -48,7 +48,7 @@ public class HashingException extends RuntimeException {
   }
 
   /**
-   * Returns the localized description of this exception.
+   * Returns the localized description of this interceptor.
    * <p>
    * Subclasses may override this method to provide locale-specific messages.
    * </p>
@@ -61,8 +61,8 @@ public class HashingException extends RuntimeException {
   }
 
   /**
-   * Returns a string representation of this exception, which includes the
-   * exception class name and detail message.
+   * Returns a string representation of this interceptor, which includes the
+   * interceptor class name and detail message.
    *
    * @return a string representation of this {@code HashingException}
    */

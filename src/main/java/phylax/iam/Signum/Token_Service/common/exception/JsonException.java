@@ -3,7 +3,7 @@ package phylax.iam.Signum.Token_Service.common.exception;
 /**
  * Exception indicating a failure during JSON processing or conversion.
  * <p>
- * This runtime exception is typically thrown when an error occurs while
+ * This runtime interceptor is typically thrown when an error occurs while
  * serializing or deserializing JSON objects, or when an invalid JSON
  * string is encountered.
  * </p>
@@ -15,8 +15,8 @@ package phylax.iam.Signum.Token_Service.common.exception;
  *   <li>Unexpected or malformed JSON input</li>
  * </ul>
  *
- * <p>This exception extends {@link RuntimeException}, making it an
- * unchecked exception. It can be used to wrap lower-level exceptions
+ * <p>This interceptor extends {@link RuntimeException}, making it an
+ * unchecked interceptor. It can be used to wrap lower-level exceptions
  * from libraries like Jackson or Gson, while keeping the API clean.</p>
  *
  * @author Pragyanshu Rai

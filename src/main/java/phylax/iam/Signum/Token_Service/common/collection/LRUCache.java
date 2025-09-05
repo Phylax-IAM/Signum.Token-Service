@@ -107,4 +107,26 @@ public class LRUCache<K, V> {
     public synchronized V getOrDefault(K key, V defaultValue) {
         return this.cacheMap.getOrDefault(key, defaultValue);
     }
+
+    /**
+     * Removes the entry associated with the given key from the cache.
+     * <p>
+     * This method is synchronized to ensure thread-safety when multiple threads
+     * attempt to modify the cache concurrently.
+     * If the key exists, it is removed from both the access order queue and the cache map.
+     * </p>
+     *
+     * @param key the key of the entry to remove; must not be {@code null}
+     * @return {@code true} if the entry was present and removed; {@code false} if the key was not found
+     * @throws NullPointerException if the key is {@code null}
+     */
+    public synchronized boolean delete(K key) {
+
+        if(this.cacheMap.containsKey(key)) {
+            this.accessOrderQueue.remove(key);
+            this.cacheMap.remove(key);
+            return true;
+        }
+        return false;
+    }
 }
