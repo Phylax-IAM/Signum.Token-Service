@@ -3,9 +3,7 @@ server:
   port: ${APPLICATION_PORT}
   address: ${APPLICATION_HOST}
 
-
-
-# application configuration
+# Spring configuration
 spring:
 
   # gRPC server configuration
@@ -14,8 +12,9 @@ spring:
       port: ${GRPC_APPLICATION_PORT}
       host: ${GRPC_APPLICATION_HOST}
 
+  # Application configuration
   application:
-    name: signum
+    name: Signum-Token-Service
 
   config:
     import: optional:file:dev.env[.properties]
@@ -46,5 +45,14 @@ spring:
 # Scheduled jobs configuration
 scheduler:
   revoked-token-cleanup:
-    seconds: 300
+    #5 minutes
+    delay: 5m
 
+# Token configuration
+token:
+  payloadKeyName: payload
+
+# Logging Configuration
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}

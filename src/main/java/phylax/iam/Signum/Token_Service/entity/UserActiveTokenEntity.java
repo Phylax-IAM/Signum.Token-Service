@@ -1,42 +1,39 @@
 package phylax.iam.Signum.Token_Service.entity;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.UUID;
+import java.time.Instant;
+import java.time.Duration;
 
 import lombok.*;
 
 import jakarta.persistence.*;
 
-import org.hibernate.annotations.UuidGenerator;
-
-import phylax.iam.Signum.Token_Service.common.constant.TokenType;
 import phylax.iam.Signum.Token_Service.entity.key.ActiveTokenKey;
 
 /**
  * Entity representing an active token issued to a user.
+ *
  * <p>
- * This entity is used to persist tokens that are currently valid
- * and can be used for authentication or authorization until they expire
- * or are explicitly revoked. Each record maps uniquely to a specific
- * user, tenant, and device combination.
+ * This entity persists tokens that are currently valid and can be used for
+ * authentication or authorization until they expire or are explicitly revoked.
+ * Each record uniquely maps to a combination of user, tenant, device, and token class.
  * </p>
  *
  * <h2>Persistence Details</h2>
  * <ul>
  *   <li>Maps to the database table {@code user-active-token}.</li>
  *   <li>Composite primary key defined by {@link ActiveTokenKey}
- *   (user, tenant, device identifiers).</li>
+ *       (user, tenant, device identifiers, and token class).</li>
  *   <li>Each token is assigned a unique {@code tokenId} generated using
- *   a time-based UUID strategy via {@link org.hibernate.annotations.UuidGenerator}.</li>
+ *       a time-based UUID strategy via {@link org.hibernate.annotations.UuidGenerator}.</li>
  * </ul>
  *
  * <h2>Lombok Annotations</h2>
  * <ul>
  *   <li>{@link Getter}, {@link Setter} – auto-generates accessors.</li>
- *   <li>{@link Builder} – supports fluent builder-style object construction.</li>
+ *   <li>{@link Builder} – enables fluent builder-style object construction.</li>
  *   <li>{@link NoArgsConstructor}, {@link AllArgsConstructor} – provides
- *   default and all-args constructors.</li>
+ *       default and all-args constructors.</li>
  * </ul>
  *
  * <h2>Lifecycle Management</h2>
@@ -45,10 +42,10 @@ import phylax.iam.Signum.Token_Service.entity.key.ActiveTokenKey;
  *   <li>{@code expiresAt} defaults to 59 seconds after {@code issuedAt} if not set.</li>
  * </ul>
  *
- * @author Pragyanshu Rai
+ * @author
+ *   Pragyanshu Rai
  * @since 1.0
  */
-
 @Entity
 @Table(name = "user-active-token")
 @Getter
@@ -56,7 +53,7 @@ import phylax.iam.Signum.Token_Service.entity.key.ActiveTokenKey;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserActiveToken {
+public class UserActiveTokenEntity {
 
     /**
      * Composite primary key consisting of user, tenant, and device identifiers.
@@ -65,19 +62,16 @@ public class UserActiveToken {
     private ActiveTokenKey activeTokenKey;
 
     /**
-     * Unique identifier for the token, generated automatically using
-     * a time-based UUID strategy.
+     * Unique identifier for the token.
      */
-    @GeneratedValue
-    @Column(name = "token_id", nullable = false)
-    @UuidGenerator(style = UuidGenerator.Style.TIME)
+    @Column(name = "token_id", nullable = false, updatable = false)
     private UUID tokenId;
 
     /**
-     * Type of token issued (e.g., authentication, refresh, temporary).
+     * Encoded token value (e.g., JWT string, SHA hash).
      */
-    @Column(name = "token_type", nullable = false)
-    private TokenType tokenType;
+    @Column(name = "token_type", nullable = false, updatable = false)
+    private String token;
 
     /**
      * Timestamp at which the token was issued.

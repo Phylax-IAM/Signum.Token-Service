@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package phylax.iam.signum;
+
+option java_multiple_files = true;
+option java_package = "phylax.iam.signum";
+option java_outer_classname = "tempProto";
+
+import "common.proto";
+
+enum CodeClassConstant {
+    NUMERIC = 0;
+    ALPHABETICAL = 1;
+    ALPHANUMERIC = 2;
+}
+
+message TempTokenRequest {
+    string subject = 1;
+    int32 codeLength = 2;
+    CodeClassConstant codeClass = 3;
+    TokenClassConstant tokenClass = 4;
+}
+
+message TempTokenResponse {
+    string tempToken = 1;
+}
+
+message ValidateTempTokenRequest {
+    string code = 1;
+    string token = 2;
+    string subject = 3;
+}
+
+message ValidateTempTokenResponse {
+    string token = 1;
+    bool codeIsValid = 2;
+    bool tokenIsValid = 3;
+}
+
+service TempTokenService {
+
+    // generate temp token
+    rpc GenerateTempToken(TempTokenRequest) returns (TempTokenResponse);
+
+    // validate temp token
+    rpc ValidateTempToken(ValidateTempTokenRequest) returns (ValidateTempTokenResponse);
+}
