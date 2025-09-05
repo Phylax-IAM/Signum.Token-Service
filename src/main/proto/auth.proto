@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package phylax.iam.signum;
+
+option java_multiple_files = true;
+option java_package = "phylax.iam.signum";
+option java_outer_classname = "authProto";
+
+import "common.proto";
+
+message ValidateTokenRequest {
+    string subject = 1;
+    string authToken = 2;
+    string refreshToken = 3;
+}
+
+message ValidateTokenResponse {
+    bool isValid = 1;
+    string authToken = 2;
+    string refreshToken = 3;
+}
+
+message TokenResponse {
+    string authToken = 1;
+    string refreshToken = 2;
+}
+
+message TokenRequest {
+    string subject = 1;
+}
+
+message RevokeResponse {
+    bool isRevoked = 1;
+}
+
+service AuthTokenService {
+
+    // generate new token
+    rpc GenerateAuthToken(TokenRequest) returns (TokenResponse);
+
+    // refresh valid token
+    rpc RefreshAuthToken(ValidateTokenRequest) returns (TokenResponse);
+
+    // validate token
+    rpc ValidateAuthToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+
+    // revoke token
+    rpc RevokeAuthToken(TokenRequest) returns (RevokeResponse);
+}
