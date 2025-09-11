@@ -10,8 +10,7 @@ import phylax.iam.Signum.Token_Service.common.annotation.LogExecutionTime;
 import phylax.iam.Signum.Token_Service.common.annotation.LogInfoAround;
 import phylax.iam.Signum.Token_Service.common.contract.ScheduledJobContract;
 import phylax.iam.Signum.Token_Service.common.util.logging.LoggerUtil;
-import phylax.iam.Signum.Token_Service.repository.UserRevokedTokenRepository;
-import phylax.iam.Signum.Token_Service.common.util.logging.LogUtil;
+import phylax.iam.Signum.Token_Service.repository.RevokedTokenRepository;
 
 import java.time.Instant;
 
@@ -36,17 +35,17 @@ import java.time.Instant;
  * </ul>
  * </p>
  *
- * <p>In case the {@link UserRevokedTokenRepository} is not initialized,
+ * <p>In case the {@link RevokedTokenRepository} is not initialized,
  * a warning is logged and the cleanup is skipped.</p>
  *
- * @see UserRevokedTokenRepository
+ * @see RevokedTokenRepository
  * @see ScheduledJobContract
  */
 @Component
 public class RevokedTokenCleanUpJob implements ScheduledJobContract {
 
     @Autowired
-    private UserRevokedTokenRepository userRevokedTokenRepository;
+    private RevokedTokenRepository revokedTokenRepository;
 
     private final Logger logger = LoggerFactory.getLogger(RevokedTokenCleanUpJob.class);
 
@@ -72,10 +71,10 @@ public class RevokedTokenCleanUpJob implements ScheduledJobContract {
     @LogExecutionTime
     public void execute() {
 
-        if(this.userRevokedTokenRepository == null) {
-            LoggerUtil.logWarn(logger, "The userRevokedTokenRepository is not yet initialized");
+        if(this.revokedTokenRepository == null) {
+            LoggerUtil.logWarn(logger, "The revokedTokenRepository is not yet initialized");
         } else {
-            this.userRevokedTokenRepository.deleteExpiredToken(
+            this.revokedTokenRepository.deleteExpiredToken(
                     Instant.now()
             );
         }

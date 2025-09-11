@@ -1,6 +1,8 @@
 package phylax.iam.Signum.Token_Service.service.grpc;
 
 import org.slf4j.Logger;
+import phylax.iam.Signum.Token_Service.common.util.time.DurationUtil;
+import phylax.iam.Signum.Token_Service.config.app.SecretKeyConfig;
 import phylax.iam.signum.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -27,22 +29,32 @@ import javax.crypto.SecretKey;
 /**
  * Service class responsible for generating and validating temporary tokens
  * used within the authentication and authorization system.
+ *
  * <p>
  * A temporary token consists of:
  * <ul>
  *     <li>A subject identifier (UUID v7)</li>
  *     <li>A one-time secure code (numeric, alphabetical, or alphanumeric)</li>
- *     <li>An encrypted payload that is bound to a token lifetime</li>
+ *     <li>An encrypted payload bound to a limited lifetime</li>
  * </ul>
+ * </p>
+ *
  * <p>
  * This service handles:
  * <ol>
  *     <li>Generating a temporary token with an encrypted payload</li>
  *     <li>Validating both the token and its associated one-time code</li>
  * </ol>
+ * </p>
+ *
  * <p>
- * Security is ensured using AES-GCM encryption and dynamic secret key management
- * through {@link SecretKeyGenerator}.
+ * Security is ensured using AES-GCM encryption and dynamic secret key
+ * management through {@link SecretKeyGenerator}.
+ * </p>
+ *
+ * @author
+ *     Pragyanshu Rai
+ * @since 1.0
  */
 @Service
 public class TempTokenService {
@@ -54,6 +66,12 @@ public class TempTokenService {
     private SecretKeyGenerator secretKeyGenerator;
 
     /**
+     * Centralized configuration for managing secret keys.
+     */
+    @Autowired
+    private SecretKeyConfig secretKeyConfig;
+
+    /**
      * The symmetric key used for encrypting and decrypting temporary token payloads.
      */
     private SecretKey encryptKey;
@@ -63,11 +81,20 @@ public class TempTokenService {
      */
     private final Logger logger = LoggerFactory.getLogger(TempTokenService.class);
 
+    /**
+     * The token class constant for temporary tokens.
+     */
+    private static final TokenClassConstant tempTokenClass = TokenClassConstant.TEMPORARY;
+
+
+    public TempTokenService() {
+        encryptKey = secretKeyConfig.get(SecretKeyTypeConstant.CIPHER_SECRET_KEY);
+    }
 
     /**
      * Generates a temporary token with an encrypted payload and associated one-time code.
-     * <p>
-     * Steps:
+     *
+     * <p>Steps:</p>
      * <ol>
      *     <li>Verifies the subject UUID</li>
      *     <li>Generates a one-time code</li>
@@ -75,11 +102,10 @@ public class TempTokenService {
      *     <li>Encrypts the payload using AES-GCM</li>
      *     <li>Generates the final signed token with an expiry</li>
      * </ol>
-     * </p>
      *
-     * @param request The {@link TempTokenRequest} containing subject and code specifications.
-     * @return A {@link TempTokenResponse} containing the generated temporary token.
-     * @throws InternalServerException if encryption or key generation fails.
+     * @param request the {@link TempTokenRequest} containing subject and code specifications
+     * @return a {@link TempTokenResponse} containing the generated temporary token
+     * @throws InternalServerException if encryption or key generation fails
      */
     public TempTokenResponse generateTempToken(TempTokenRequest request) {
         TempTokenResponse.Builder responseBuilder = TempTokenResponse.newBuilder();
@@ -97,7 +123,7 @@ public class TempTokenService {
                 .builder()
                 .subject(subject)
                 .oneTimeCode(code)
-                .tokenClassConstant(TokenClassConstant.TEMPORARY)
+                .tokenClassConstant(tempTokenClass)
                 .build();
 
         final String tokenPayloadString = PayloadUtil.generateTempPayload(tempTokenPayloadDTO);
@@ -105,23 +131,16 @@ public class TempTokenService {
         String encryptedPayloadString;
 
         try {
-            encryptKey = secretKeyGenerator.fetchOrGenerateKey(
-                    SecretKeyTypeConstant.CIPHER_SECRET_KEY,
-                    128,
-                    SecretAlgorithmConstant.AES_ALGO.getAlgorithm()
-            );
-
             encryptedPayloadString = AESGCM.encrypt(tokenPayloadString, encryptKey);
-
         } catch (Exception e) {
             LoggerUtil.logErrorAndDebug(logger, "", e);
             throw new InternalServerException(e.getMessage());
         }
 
-        final String tempToken = TokenGeneratorUtil.generateTokenWithPayload(
+        final String tempToken = TokenGeneratorUtil.generateToken(
                 encryptedPayloadString,
-                300,
-                TokenClassConstant.TEMPORARY
+                DurationUtil.getDurationOrDefault(request.getTempTTLSeconds(), tempTokenClass),
+                tempTokenClass
         );
 
         return responseBuilder
@@ -139,11 +158,11 @@ public class TempTokenService {
      * @param token The token to validate and extract the payload from.
      * @return The encrypted payload string.
      */
-    private String isValidToken(String token) {
+    private String validateAndExtractPayload(String token) {
         return TokenValidatorUtil.extractEncryptedPayload(
                 token,
                 TokenGeneratorUtil.getPayloadKeyName(),
-                TokenGeneratorUtil.getTempSecretKey()
+                TokenGeneratorUtil.getKeyByType(tempTokenClass)
         );
     }
 
@@ -151,9 +170,9 @@ public class TempTokenService {
      * Validates a one-time code by comparing the provided target code
      * with the original stored code.
      *
-     * @param targetCode   The code supplied in the validation request.
-     * @param originalCode The original code stored in the token payload.
-     * @return {@code true} if both codes match; otherwise {@code false}.
+     * @param targetCode   the code supplied in the validation request
+     * @param originalCode the original code stored in the token payload
+     * @return {@code true} if both codes match; otherwise {@code false}
      */
     private boolean isValidCode(String targetCode, String originalCode) {
         return originalCode.equals(targetCode);
@@ -161,24 +180,23 @@ public class TempTokenService {
 
     /**
      * Validates both a temporary token and its associated one-time code.
-     * <p>
-     * Steps:
+     *
+     * <p>Steps:</p>
      * <ol>
      *     <li>Decrypts the token to retrieve the payload</li>
      *     <li>Parses and validates the payload</li>
      *     <li>Checks the one-time code for correctness</li>
      * </ol>
-     * </p>
      *
-     * @param request The {@link ValidateTempTokenRequest} containing token and code to validate.
-     * @return A {@link ValidateTempTokenResponse} indicating token and code validity.
-     * @throws InvalidJWTException if the token payload cannot be decrypted.
+     * @param request the {@link ValidateTempTokenRequest} containing token and code to validate
+     * @return a {@link ValidateTempTokenResponse} indicating token and code validity
+     * @throws InvalidJWTException if the token payload cannot be decrypted
      */
     public ValidateTempTokenResponse validateTempTokenAndCode(ValidateTempTokenRequest request) {
         final ValidateTempTokenResponse.Builder responseBuilder = ValidateTempTokenResponse.newBuilder();
 
         // decrypt the token
-        final String encryptedPayloadString = isValidToken(request.getToken());
+        final String encryptedPayloadString = validateAndExtractPayload(request.getToken());
         String decryptedPayloadString = null;
         try {
             decryptedPayloadString = AESGCM.decrypt(encryptedPayloadString, encryptKey);

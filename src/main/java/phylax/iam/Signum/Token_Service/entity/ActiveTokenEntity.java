@@ -8,6 +8,7 @@ import lombok.*;
 
 import jakarta.persistence.*;
 
+import phylax.iam.Signum.Token_Service.common.constant.TTLDurationConstant;
 import phylax.iam.Signum.Token_Service.entity.key.ActiveTokenKey;
 
 /**
@@ -53,7 +54,7 @@ import phylax.iam.Signum.Token_Service.entity.key.ActiveTokenKey;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserActiveTokenEntity {
+public class ActiveTokenEntity {
 
     /**
      * Composite primary key consisting of user, tenant, and device identifiers.
@@ -113,7 +114,20 @@ public class UserActiveTokenEntity {
 
         // set to default expire time if null
         if(this.expiresAt == null) {
-            this.expiresAt = issuedAt.plus(Duration.ofSeconds(59));
+            this.expiresAt = issuedAt.plus(
+                    Duration.ofSeconds(
+                            TTLDurationConstant.TEMPORARY_TOKEN.getSeconds()
+                    )
+            );
         }
+    }
+
+    public void setExpiry(int seconds) {
+        this.issuedAt = Instant.now();
+        this.expiresAt = issuedAt.plus(
+                Duration.ofSeconds(
+                        seconds
+                )
+        );
     }
 }

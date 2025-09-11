@@ -19,6 +19,7 @@ message TempTokenRequest {
     int32 codeLength = 2;
     CodeClassConstant codeClass = 3;
     TokenClassConstant tokenClass = 4;
+    uint32 tempTTLSeconds = 5;
 }
 
 message TempTokenResponse {

@@ -1,7 +1,9 @@
 package phylax.iam.Signum.Token_Service.repository;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
@@ -10,10 +12,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import phylax.iam.Signum.Token_Service.entity.key.RevokedTokenKey;
-import phylax.iam.Signum.Token_Service.entity.UserRevokedTokenEntity;
+import phylax.iam.Signum.Token_Service.entity.RevokedTokenEntity;
 
 /**
- * Repository interface for managing {@link UserRevokedTokenEntity} persistence operations.
+ * Repository interface for managing {@link RevokedTokenEntity} persistence operations.
  *
  * <p>This repository extends {@link JpaRepository}, providing standard CRUD
  * functionality for entities identified by a composite primary key
@@ -27,21 +29,24 @@ import phylax.iam.Signum.Token_Service.entity.UserRevokedTokenEntity;
  *       expired before a given timestamp.</li>
  * </ul>
  *
- * @see UserRevokedTokenEntity
+ * @see RevokedTokenEntity
  * @see RevokedTokenKey
  */
 @Repository
-public interface UserRevokedTokenRepository extends JpaRepository<UserRevokedTokenEntity, RevokedTokenKey> {
+public interface RevokedTokenRepository extends JpaRepository<RevokedTokenEntity, RevokedTokenKey> {
 
     // Read
 
     /**
-     * Retrieves a {@link UserRevokedTokenEntity} by its composite key.
+     * Retrieves a {@link RevokedTokenEntity} by its composite key.
      *
      * @param revokedTokenKey the composite key consisting of subject and token ID
      * @return an {@link Optional} containing the revoked token if found, or empty otherwise
      */
-    Optional<UserRevokedTokenEntity> findByRevokedTokenKey(RevokedTokenKey revokedTokenKey);
+    Optional<RevokedTokenEntity> findByRevokedTokenKey(RevokedTokenKey revokedTokenKey);
+
+    @Query("SELECT rt.token FROM RevokedTokenEntity rt WHERE rt.revokedTokenKey.subject = :targetSubject")
+    List<String> findRevokedTokenStringBySubject(@Param("targetSubject") UUID subject);
 
     // Delete
 
@@ -52,6 +57,6 @@ public interface UserRevokedTokenRepository extends JpaRepository<UserRevokedTok
      *                    earlier than this value will be deleted
      */
     @Modifying
-    @Query("DELETE FROM UserRevokedTokenEntity rt WHERE rt.expiresAt < :now")
+    @Query("DELETE FROM RevokedTokenEntity rt WHERE rt.expiresAt < :now")
     void deleteExpiredToken(@Param("now") Instant thisInstant);
 }

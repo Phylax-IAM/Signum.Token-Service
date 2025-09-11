@@ -12,6 +12,7 @@ import phylax.iam.Signum.Token_Service.common.security.SecretKeyGenerator;
 import phylax.iam.Signum.Token_Service.common.constant.SecretKeyTypeConstant;
 import phylax.iam.Signum.Token_Service.common.constant.SecretAlgorithmConstant;
 import phylax.iam.Signum.Token_Service.common.exception.IllegalInstantiationException;
+import phylax.iam.Signum.Token_Service.config.app.SecretKeyConfig;
 
 import java.util.Date;
 import java.time.Instant;
@@ -70,23 +71,13 @@ public final class TokenGeneratorUtil {
     /**
      * The claim key name used to embed payload data in the JWT.
      * <p>
-     * Defaults to {@code "payload"} if not configured explicitly via {@link #init(SecretKeyGenerator, String)}.
+     * Defaults to {@code "payload"} if not configured explicitly via {@link #init(String)}.
      * </p>
      */
     @Getter
     private static String payloadKeyName;
 
-    /** Secret key used to sign temporary tokens. */
-    @Getter
-    private static SecretKey tempSecretKey;
-
-    /** Secret key used to sign authentication tokens. */
-    @Getter
-    private static SecretKey authSecretKey;
-
-    /** Secret key used to sign refresh tokens. */
-    @Getter
-    private static SecretKey refreshSecretKey;
+    private static SecretKeyConfig secretKeyConfig;
 
     /** Logger instance for logging token-related operations and errors. */
     private static final Logger logger = LoggerFactory.getLogger(TokenGeneratorUtil.class);
@@ -107,36 +98,12 @@ public final class TokenGeneratorUtil {
      * Must be called once at application startup before any token operations are performed.
      * </p>
      *
-     * @param secretKeyGenerator the generator used to fetch or create signing keys
      * @param payloadKeyName     the claim name for payload data (defaults to "payload" if {@code null} or empty)
-     * @throws NoSuchAlgorithmException if the required HMAC-SHA256 algorithm is not available in the runtime
      */
-    public static void init(
-            SecretKeyGenerator secretKeyGenerator,
-            String payloadKeyName
-    ) throws NoSuchAlgorithmException {
-
+    public static void init(SecretKeyConfig secretKeyConfig, String payloadKeyName) {
+        TokenGeneratorUtil.secretKeyConfig = secretKeyConfig;
         TokenGeneratorUtil.payloadKeyName =
                 (payloadKeyName == null || payloadKeyName.isBlank()) ? "payload" : payloadKeyName;
-
-        // Fetch or generate keys for different token classes
-        tempSecretKey = secretKeyGenerator.fetchOrGenerateKey(
-                SecretKeyTypeConstant.TEMP_SECRET_KEY,
-                256,
-                SecretAlgorithmConstant.HMAC_SHA256.getAlgorithm()
-        );
-
-        authSecretKey = secretKeyGenerator.fetchOrGenerateKey(
-                SecretKeyTypeConstant.AUTH_SECRET_KEY,
-                256,
-                SecretAlgorithmConstant.HMAC_SHA256.getAlgorithm()
-        );
-
-        refreshSecretKey = secretKeyGenerator.fetchOrGenerateKey(
-                SecretKeyTypeConstant.REFRESH_SECRET_KEY,
-                256,
-                SecretAlgorithmConstant.HMAC_SHA256.getAlgorithm()
-        );
     }
 
     /**
@@ -147,11 +114,11 @@ public final class TokenGeneratorUtil {
      */
     public static SecretKey getKeyByType(TokenClassConstant tokenClassConstant) {
         if (tokenClassConstant == TokenClassConstant.AUTHENTICATION) {
-            return authSecretKey;
+            return TokenGeneratorUtil.secretKeyConfig.get(SecretKeyTypeConstant.AUTH_SECRET_KEY);
         } else if (tokenClassConstant == TokenClassConstant.REFRESH) {
-            return refreshSecretKey;
+            return TokenGeneratorUtil.secretKeyConfig.get(SecretKeyTypeConstant.REFRESH_SECRET_KEY);
         }
-        return tempSecretKey;
+        return TokenGeneratorUtil.secretKeyConfig.get(SecretKeyTypeConstant.TEMP_SECRET_KEY);
     }
 
     /**

@@ -5,7 +5,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
-import phylax.iam.Signum.Token_Service.common.security.SecretKeyGenerator;
 import phylax.iam.Signum.Token_Service.common.util.logging.LogUtil;
 import phylax.iam.Signum.Token_Service.common.util.token.TokenGeneratorUtil;
 
@@ -27,11 +26,11 @@ public class ApplicationConfig {
     private String tokenPayloadKeyName;
 
     @Autowired
-    private SecretKeyGenerator secretKeyGenerator;
+    private SecretKeyConfig secretKeyConfig;
 
     @PostConstruct
     public void init() throws Exception {
         LogUtil.init(serviceName);
-        TokenGeneratorUtil.init(secretKeyGenerator, tokenPayloadKeyName);
+        TokenGeneratorUtil.init(secretKeyConfig, tokenPayloadKeyName);
     }
 }

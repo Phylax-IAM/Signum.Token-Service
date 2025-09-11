@@ -51,7 +51,7 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRevokedTokenEntity {
+public class RevokedTokenEntity {
 
     /**
      * Composite key representing the unique identity of the revoked token.

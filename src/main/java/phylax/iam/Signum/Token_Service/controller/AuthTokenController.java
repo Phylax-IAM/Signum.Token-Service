@@ -34,7 +34,7 @@ public class AuthTokenController extends AuthTokenServiceGrpc.AuthTokenServiceIm
     }
 
     @Override
-    public void revokeAuthToken(TokenRequest request, StreamObserver<RevokeResponse> responseObserver) {
+    public void revokeAuthToken(RevokeTokenRequest request, StreamObserver<RevokeTokenResponse> responseObserver) {
         super.revokeAuthToken(request, responseObserver);
     }
 }

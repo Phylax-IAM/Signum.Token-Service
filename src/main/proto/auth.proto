@@ -16,8 +16,6 @@ message ValidateTokenRequest {
 
 message ValidateTokenResponse {
     bool isValid = 1;
-    string authToken = 2;
-    string refreshToken = 3;
 }
 
 message TokenResponse {
@@ -27,9 +25,15 @@ message TokenResponse {
 
 message TokenRequest {
     string subject = 1;
+    uint32 authTTLSeconds = 2;
+    uint32 refreshTTLSeconds = 3;
 }
 
-message RevokeResponse {
+message RevokeTokenRequest {
+    string subject = 1;
+}
+
+message RevokeTokenResponse {
     bool isRevoked = 1;
 }
 
@@ -45,5 +49,5 @@ service AuthTokenService {
     rpc ValidateAuthToken(ValidateTokenRequest) returns (ValidateTokenResponse);
 
     // revoke token
-    rpc RevokeAuthToken(TokenRequest) returns (RevokeResponse);
+    rpc RevokeAuthToken(RevokeTokenRequest) returns (RevokeTokenResponse);
 }
